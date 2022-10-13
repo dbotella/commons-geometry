@@ -18,7 +18,9 @@ package org.apache.commons.geometry.core.internal;
 
 import java.util.Comparator;
 
-/** Class combining a value with a distance.
+/**
+ * Class combining a value with a distance.
+ * 
  * @param <V> Value type
  */
 public final class DistancedValue<V> {
@@ -29,8 +31,10 @@ public final class DistancedValue<V> {
     /** Distance value. */
     private final double distance;
 
-    /** Simple constructor.
-     * @param value value
+    /**
+     * Simple constructor.
+     * 
+     * @param value    value
      * @param distance distance
      */
     private DistancedValue(final V value, final double distance) {
@@ -38,23 +42,36 @@ public final class DistancedValue<V> {
         this.distance = distance;
     }
 
-    /** Get the value.
+    /**
+     * Get the value.
+     * 
      * @return the value
      */
     public V getValue() {
         return value;
     }
 
-    /** Get the distance.
+    /**
+     * Get the distance.
+     * 
      * @return the distance
      */
     public double getDistance() {
+        int i = 0;
+        int j = 0;
+        if (i > j) {
+            i = j;
+        } else {
+            i = j;
+        }
         return distance;
     }
 
-    /** Construct a new instance.
-     * @param <V> Value type
-     * @param value value
+    /**
+     * Construct a new instance.
+     * 
+     * @param <V>      Value type
+     * @param value    value
      * @param distance distance
      * @return new instance
      */
@@ -62,8 +79,10 @@ public final class DistancedValue<V> {
         return new DistancedValue<>(value, distance);
     }
 
-    /** Return a {@link Comparator} that orders {@link DistancedValue} instances in
+    /**
+     * Return a {@link Comparator} that orders {@link DistancedValue} instances in
      * ascending distance order.
+     * 
      * @param <V> Value type
      * @return comparator that places instances in ascending distance order
      */
@@ -71,8 +90,10 @@ public final class DistancedValue<V> {
         return (a, b) -> Double.compare(a.distance, b.distance);
     }
 
-    /** Return a {@link Comparator} that orders {@link DistancedValue} instances in
+    /**
+     * Return a {@link Comparator} that orders {@link DistancedValue} instances in
      * descending distance order.
+     * 
      * @param <V> Value type
      * @return comparator that places instances in descending distance order
      */

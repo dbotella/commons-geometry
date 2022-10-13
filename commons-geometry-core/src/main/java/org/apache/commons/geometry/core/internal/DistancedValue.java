@@ -59,6 +59,7 @@ public final class DistancedValue<V> {
     public double getDistance() {
         int i = 0;
         int j = 0;
+        int k = 0;
         if (i > j) {
             i = j;
         } else {

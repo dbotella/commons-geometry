@@ -56,7 +56,7 @@ pipeline {
 			when {
 				allOf {
 					not { changeRequest() }
-					expression { GIT_BRANCH ==~ /(master|stage|release)/ }
+					// expression { GIT_BRANCH ==~ /(master|stage|release)/ }
 				}
 			}
 			steps {
@@ -78,7 +78,7 @@ pipeline {
 			when {
 				allOf {
 					changeRequest()
-					expression { CHANGE_TARGET ==~ /(master|stage|release)/ }
+					// expression { CHANGE_TARGET ==~ /(master|stage|release)/ }
 				}
 			}
 			steps {

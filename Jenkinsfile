@@ -66,14 +66,16 @@ pipeline {
 						cov-build --dir /tmp/idir --fs-capture-search $WORKSPACE mvn -B clean compile -DskipTests
                         cov-manage-emit --dir /tmp/idir export-json-build --output-file /tmp/idir/export.json 
 
-						cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
-						cov-commit-defects --dir /tmp/idir --ticker-mode none --url $COV_URL --stream $COV_STREAM \
-							--description $BUILD_TAG --target Linux_x86_64 --version $GIT_COMMIT
+						#cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
+						#cov-commit-defects --dir /tmp/idir --ticker-mode none --url $COV_URL --stream $COV_STREAM \
+						#	--description $BUILD_TAG --target Linux_x86_64 --version $GIT_COMMIT
 					'''
+                    /* 
 					script { // Coverity Quality Gate
 						count = coverityIssueCheck(viewName: 'High Impact Outstanding', returnIssueCount: true)
 						if (count != 0) { unstable 'issues detected' }
 					}
+                    */
 				}
 			}
 		}

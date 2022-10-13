@@ -39,6 +39,34 @@ pipeline {
 	}
 
 	stages {
+		stage('Coverity Full Scan') {
+			when {
+				allOf {
+					not { changeRequest() }
+					// expression { GIT_BRANCH ==~ /(master|stage|release)/ }
+				}
+			}
+			steps {
+				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
+					sh '''
+                        rm -rf /tmp/idir
+						cov-build --dir /tmp/idir --fs-capture-search $WORKSPACE mvn -B clean compile -DskipTests
+                        cov-manage-emit --dir /tmp/idir export-json-build --output-file /tmp/idir/export.json --strip-path $(pwd)
+
+						#cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
+						#cov-commit-defects --dir /tmp/idir --ticker-mode none --url $COV_URL --stream $COV_STREAM \
+						#	--description $BUILD_TAG --target Linux_x86_64 --version $GIT_COMMIT
+					'''
+                    /* 
+					script { // Coverity Quality Gate
+						count = coverityIssueCheck(viewName: 'High Impact Outstanding', returnIssueCount: true)
+						if (count != 0) { unstable 'issues detected' }
+					}
+                    */
+				}
+                // minio(bucket: "coverity.artifacts",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
+			}
+		}
 		stage('Coverity Pull request Scan') {
 			steps {
 				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {

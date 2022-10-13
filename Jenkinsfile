@@ -46,6 +46,7 @@ pipeline {
                         rm -rf /tmp/idir_pull
 						# cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
 						cat /tmp/idir/export.json | sed  's#/var/lib/jenkins/workspace/commons-geometry#$WORKSPACE#g'  > import.json 
+						cat import.json
 						# cat  /tmp/idir/export.json > import.json
 						cov-manage-emit --dir /tmp/idir_pull import-json-build --input-file import.json
 						cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --present-in-reference false \

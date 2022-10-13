@@ -53,11 +53,11 @@ pipeline {
 			when {
 				allOf {
 					not { changeRequest() }
-					expression { BRANCH_NAME ==~ /(master|stage|release)/ }
+					expression { GIT_BRANCH ==~ /(master|stage|release)/ }
 				}
 			}
 			steps {
-				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT-$BRANCH_NAME") {
+				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT-$GIT_BRANCH") {
 					sh '''
 						cov-build --dir idir --fs-capture-search $WORKSPACE mvn -B clean package -DskipTests
 						cov-analyze --dir idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
@@ -96,7 +96,7 @@ pipeline {
 		}
 		stage('Deploy') {
 			when {
-				expression { BRANCH_NAME ==~ /(master|stage|release)/ }
+				expression { GIT_BRANCH ==~ /(master|stage|release)/ }
 			}
 			steps {
 				sh 'mvn -B install'

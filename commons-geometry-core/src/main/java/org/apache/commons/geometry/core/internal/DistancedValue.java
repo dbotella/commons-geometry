@@ -60,7 +60,7 @@ public final class DistancedValue<V> {
         int i = 0;
         int j = 0;
         int k = 0;
-        if (i > j) {
+        if (k > j) {
             i = j;
         } else {
             i = j;

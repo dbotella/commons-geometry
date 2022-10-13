@@ -76,7 +76,7 @@ pipeline {
 					}
                     */
 				}
-                minio(bucket: "coverity.artifacts",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
+                // minio(bucket: "coverity.artifacts",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
 			}
 		}
 		stage('Coverity Pull request Scan') {

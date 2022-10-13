@@ -39,7 +39,6 @@ pipeline {
 	}
 
 	stages {
-
 		stage('Coverity Pull request Scan') {
 			steps {
 				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
@@ -59,6 +58,8 @@ pipeline {
 				}
 			}
 		}
+	}
+
 	post {
 		always {
 			cleanWs()

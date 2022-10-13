@@ -84,14 +84,12 @@ pipeline {
 				allOf {
 					not { changeRequest() }
 					// changeRequest()
-					// expression { CHANGE_TARGET ==~ /(master|stage|release)/ }
+					// expression { GIT_BRANCH ==~ /(master|stage|release)/ }
 				}
 			}
 			steps {
 				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
 					sh '''
-						export CHANGE_SET=$(git --no-pager diff origin/$CHANGE_TARGET --name-only)
-						[ -z "$CHANGE_SET" ] && exit 0
                         rm -rf /tmp/idir_pull
 						# cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
 						sed 's/\/var\/lib\/jenkins\/workspace\/commons-geometry\/$(pwd)/' /tmp/idir/export.json > import.json

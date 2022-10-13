@@ -72,7 +72,7 @@ pipeline {
                         s3_secret="SIGpass8!"
 
                         file= /tmp/idir/export.json 
-                        bucket=coverity.artifacts
+                        bucket=bucket
                         resource='/${bucket}/${file}'
                         content_type="application/json"
                         date=`date -R`
@@ -95,6 +95,17 @@ pipeline {
 						if (count != 0) { unstable 'issues detected' }
 					}
 				}
+			}
+		}
+		stage('Upload build artifacts to Minio') {
+			when {
+				allOf {
+					not { changeRequest() }
+					// expression { GIT_BRANCH ==~ /(master|stage|release)/ }
+				}
+			}
+			steps {
+                minio(bucket: "bucket",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
 			}
 		}
 		stage('Coverity Pull request Scan') {

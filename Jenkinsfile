@@ -60,7 +60,7 @@ pipeline {
 				}
 			}
 			steps {
-				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT-$GIT_BRANCH") {
+				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
 					sh '''
                         rm -rf /tmp/idir
 						cov-build --dir /tmp/idir --fs-capture-search $WORKSPACE mvn -B clean compile -DskipTests
@@ -75,7 +75,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Coverity Incremental Scan') {
+		stage('Coverity Pull request Scan') {
 			when {
 				allOf {
 					changeRequest()
@@ -83,7 +83,7 @@ pipeline {
 				}
 			}
 			steps {
-				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT-$CHANGE_TARGET") {
+				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
 					sh '''
 						export CHANGE_SET=$(git --no-pager diff origin/$CHANGE_TARGET --name-only)
 						[ -z "$CHANGE_SET" ] && exit 0
@@ -98,7 +98,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Deploy') {
+/* 		stage('Deploy') {
 			when {
 				expression { GIT_BRANCH ==~ /(master|stage|release)/ }
 			}
@@ -106,7 +106,7 @@ pipeline {
 				sh 'mvn -B install'
 			}
 		}
-	}
+ */	}
 	post {
 		always {
 			cleanWs()

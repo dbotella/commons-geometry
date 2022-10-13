@@ -73,17 +73,17 @@ pipeline {
 
                         file= /tmp/idir/export.json 
                         bucket=coverity.artifacts
-                        resource="/${bucket}/${file}"
+                        resource='/${bucket}/${file}'
                         content_type="application/json"
                         date=`date -R`
-                        _signature="PUT\n\n${content_type}\n${date}\n${resource}"
+                        _signature='PUT\n\n${content_type}\n${date}\n${resource}'
                         signature=`echo -en ${_signature} | openssl sha1 -hmac ${s3_secret} -binary | base64`
 
-                        curl -v -X PUT -T "${file}" \
-                                -H "Host: $host" \
-                                -H "Date: ${date}" \
-                                -H "Content-Type: ${content_type}" \
-                                -H "Authorization: AWS ${s3_key}:${signature}" \
+                        curl -v -X PUT -T '${file}' \
+                                -H 'Host: $host' \
+                                -H 'Date: ${date}' \
+                                -H 'Content-Type: ${content_type}' \
+                                -H 'Authorization: AWS ${s3_key}:${signature}' \
                                 http://192.168.1.14:9001/buckets${resource}
 
 						cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security

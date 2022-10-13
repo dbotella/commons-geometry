@@ -64,12 +64,34 @@ pipeline {
 					sh '''
                         rm -rf /tmp/idir
 						cov-build --dir /tmp/idir --fs-capture-search $WORKSPACE mvn -B clean compile -DskipTests
+                        cov-manage-emit --dir /tmp/idir export-json-build --output-file /tmp/idir/export.json 
+
+
+                        host=192.168.1.14
+                        s3_key="siguser
+                        s3_secret="SIGpass8!"
+
+                        file= /tmp/idir/export.json 
+                        bucket=coverity.artifacts
+                        resource="/${bucket}/${file}"
+                        content_type="application/json"
+                        date=`date -R`
+                        _signature="PUT\n\n${content_type}\n${date}\n${resource}"
+                        signature=`echo -en ${_signature} | openssl sha1 -hmac ${s3_secret} -binary | base64`
+
+                        curl -v -X PUT -T "${file}" \
+                                -H "Host: $host" \
+                                -H "Date: ${date}" \
+                                -H "Content-Type: ${content_type}" \
+                                -H "Authorization: AWS ${s3_key}:${signature}" \
+                                http://192.168.1.14:9001/buckets${resource}
+
 						cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
 						cov-commit-defects --dir /tmp/idir --ticker-mode none --url $COV_URL --stream $COV_STREAM \
 							--description $BUILD_TAG --target Linux_x86_64 --version $GIT_COMMIT
 					'''
 					script { // Coverity Quality Gate
-						count = coverityIssueCheck(viewName: 'OWASP Web Top 10', returnIssueCount: true)
+						count = coverityIssueCheck(viewName: 'High Impact Outstanding', returnIssueCount: true)
 						if (count != 0) { unstable 'issues detected' }
 					}
 				}
@@ -87,8 +109,9 @@ pipeline {
 					sh '''
 						export CHANGE_SET=$(git --no-pager diff origin/$CHANGE_TARGET --name-only)
 						[ -z "$CHANGE_SET" ] && exit 0
-						cov-run-desktop --dir idir --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
-						cov-run-desktop --dir idir --url $COV_URL --stream $COV_STREAM --present-in-reference false \
+                        rm -rf /tmp/idir
+						cov-run-desktop --dir /tmp/idir --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
+						cov-run-desktop --dir /tmp/idir --url $COV_URL --stream $COV_STREAM --present-in-reference false \
 							--ignore-uncapturable-inputs true --text-output issues.txt $CHANGE_SET
 						if [ -s issues.txt ]; then cat issues.txt; touch issues_found; fi
 					'''

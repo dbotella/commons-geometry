@@ -44,11 +44,14 @@ pipeline {
 				sh 'mvn -B compile'
 			}
 		}
-		// stage('Test') {
-		//	steps {
-		//		sh 'mvn -B test'
-		//	}
-		// }
+        
+		stage('Test') {
+			steps {
+				// sh 'mvn -B test'
+                sh 'echo $GIT_BRANCH'
+                sh 'echo $GIT_COMMIT'
+			}
+		}
 		stage('Coverity Full Scan') {
 			when {
 				allOf {

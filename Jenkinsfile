@@ -63,7 +63,7 @@ pipeline {
 					sh '''
                         rm -rf /tmp/idir
 						cov-build --dir /tmp/idir --fs-capture-search $WORKSPACE mvn -B clean compile -DskipTests
-                        cov-manage-emit --dir /tmp/idir export-json-build --output-file /tmp/idir/export.json 
+                        cov-manage-emit --dir /tmp/idir export-json-build --output-file /tmp/idir/export.json --strip-path $(pwd)
 
 						#cov-analyze --dir /tmp/idir --ticker-mode none --strip-path $WORKSPACE --webapp-security
 						#cov-commit-defects --dir /tmp/idir --ticker-mode none --url $COV_URL --stream $COV_STREAM \

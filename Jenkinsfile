@@ -39,6 +39,7 @@ pipeline {
 	}
 
 	stages {
+		/* 
 		stage('Coverity Full Scan') {
 			when {
 				allOf {
@@ -66,16 +67,15 @@ pipeline {
 				}
                 // minio(bucket: "coverity.artifacts",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
 			}
-		}
+		} */
 		stage('Coverity Pull request Scan') {
 			steps {
 				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
 					sh """#!/bin/bash
                         rm -rf /tmp/idir_pull
+						mvn dependency:copy-dependencies
 						# cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
 						cat /tmp/idir/export.json | sed  's#/var/lib/jenkins/workspace/commons-geometry#$WORKSPACE#g'  > import.json 
-						cat import.json
-						# cat  /tmp/idir/export.json > import.json
 						cov-manage-emit --dir /tmp/idir_pull import-json-build --input-file import.json
 						cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --present-in-reference false \
 							--ignore-uncapturable-inputs true --text-output issues.txt $CHANGE_SET

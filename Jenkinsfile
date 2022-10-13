@@ -14,7 +14,7 @@ pipeline {
 	}
 
 	tools {
-		jdk 'openjdk-11'
+		jdk 'java-11-amazon-corretto'
 	}
 
 	stages {

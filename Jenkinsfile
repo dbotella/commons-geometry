@@ -50,7 +50,6 @@ pipeline {
 				sh 'mvn -B test'
 			}
 		}
-        */
 		stage('Coverity Full Scan') {
 			when {
 				allOf {
@@ -79,10 +78,12 @@ pipeline {
                 // minio(bucket: "coverity.artifacts",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
 			}
 		}
+        */
 		stage('Coverity Pull request Scan') {
 			when {
 				allOf {
-					changeRequest()
+					not { changeRequest() }
+					// changeRequest()
 					// expression { CHANGE_TARGET ==~ /(master|stage|release)/ }
 				}
 			}
@@ -91,9 +92,12 @@ pipeline {
 					sh '''
 						export CHANGE_SET=$(git --no-pager diff origin/$CHANGE_TARGET --name-only)
 						[ -z "$CHANGE_SET" ] && exit 0
-                        rm -rf /tmp/idir
-						cov-run-desktop --dir /tmp/idir --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
-						cov-run-desktop --dir /tmp/idir --url $COV_URL --stream $COV_STREAM --present-in-reference false \
+                        rm -rf /tmp/idir_pull
+						# cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
+						sed 's/\/var\/lib\/jenkins\/workspace\/commons-geometry\/$(pwd)/' /tmp/idir/export.json > import.json
+
+						cov-manage-emit --dir /tmp/idir_pull import-json-build --input-file import.json
+						cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --present-in-reference false \
 							--ignore-uncapturable-inputs true --text-output issues.txt $CHANGE_SET
 						if [ -s issues.txt ]; then cat issues.txt; touch issues_found; fi
 					'''
@@ -114,7 +118,6 @@ pipeline {
  */	}
 	post {
 		always {
-            archiveArtifacts artifacts: '/tmp/idir/export.json', fingerprint: true
 			cleanWs()
 		}
 	}

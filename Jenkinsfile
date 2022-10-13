@@ -15,7 +15,7 @@ pipeline {
 
 	tools {
 		jdk 'java-11-amazon-corretto'
-        maven '3.8.3' 
+        maven '/opt/apache-maven-3.6.0' 
 	}
 
 	stages {

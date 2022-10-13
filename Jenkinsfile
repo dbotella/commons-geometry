@@ -39,19 +39,18 @@ pipeline {
 	}
 
 	stages {
+        /* 
 		stage('Build') {
 			steps {
 				sh 'mvn -B compile'
 			}
 		}
-        
 		stage('Test') {
 			steps {
-				// sh 'mvn -B test'
-                sh 'echo $GIT_BRANCH'
-                sh 'echo $GIT_COMMIT'
+				sh 'mvn -B test'
 			}
 		}
+        */
 		stage('Coverity Full Scan') {
 			when {
 				allOf {
@@ -77,16 +76,6 @@ pipeline {
 					}
                     */
 				}
-			}
-		}
-		stage('Upload build artifacts to Minio') {
-			when {
-				allOf {
-					not { changeRequest() }
-					// expression { GIT_BRANCH ==~ /(master|stage|release)/ }
-				}
-			}
-			steps {
                 minio(bucket: "bucket",includes: "/tmp/idir/export.json", host: "http://coverity.local.synopsys.com:9001/")
 			}
 		}

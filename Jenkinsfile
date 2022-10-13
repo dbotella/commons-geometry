@@ -42,7 +42,7 @@ pipeline {
 		stage('Coverity Pull request Scan') {
 			steps {
 				withCoverityEnvironment(coverityInstanceUrl: "$CONNECT", projectName: "$PROJECT", streamName: "$PROJECT") {
-					sh '''
+					sh '''"#!/bin/bash
                         rm -rf /tmp/idir_pull
 						# cov-run-desktop --dir /tmp/idir_pull --url $COV_URL --stream $COV_STREAM --build mvn -B clean package -DskipTests
 						cat /tmp/idir/export.json | sed  "s#/var/lib/jenkins/workspace/commons-geometry/#$(pwd)#g"  > import.json

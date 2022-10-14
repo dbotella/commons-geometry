@@ -29,6 +29,7 @@ pipeline {
 	// agent any
 	agent {
 		node {
+			label 'my-defined-label'
 			customWorkspace '/tmp/jenkins-cf3224cd/workspace/coverity-scan'
 		}
 	}

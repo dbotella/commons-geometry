@@ -27,14 +27,13 @@
 
 pipeline {
 	// agent any
-	agent {
-		docker {
-			image 'maven:3.8.1-adoptopenjdk-11'
-			label "master"
-			args  '-v /tmp:/tmp -v /opt/Coverity/cov-analysis:/opt/Coverity/cov-analysis'
+
+  agent {
+    node {
+      label 'master'
 			customWorkspace '/tmp/jenkins-cf3224cd/workspace/coverity-scan'
-    	}
-	}
+    }
+
 
 	environment {
 		CONNECT = 'http://coverity.local.synopsys.com:8080'
@@ -127,5 +126,7 @@ pipeline {
 			cleanWs()
 		}
 	}
+}
+
 }
 

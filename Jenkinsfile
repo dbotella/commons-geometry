@@ -33,8 +33,7 @@ pipeline {
       label 'master'
 			customWorkspace '/tmp/jenkins-cf3224cd/workspace/coverity-scan'
     }
-
-
+  }
 	environment {
 		CONNECT = 'http://coverity.local.synopsys.com:8080'
 		PROJECT = 'commons-geometry'
@@ -128,5 +127,4 @@ pipeline {
 	}
 }
 
-}
 

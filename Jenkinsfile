@@ -28,10 +28,12 @@
 pipeline {
 	// agent any
 	agent {
-		node {
+		docker {
+			image 'maven:3.8.1-adoptopenjdk-11'
 			label "master"
+			args  '-v /tmp:/tmp -v /opt/Coverity/cov-analysis:/opt/Coverity/cov-analysis'
 			customWorkspace '/tmp/jenkins-cf3224cd/workspace/coverity-scan'
-		}
+    	}
 	}
 
 	environment {
